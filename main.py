@@ -43,10 +43,8 @@ async def process_csv(file: UploadFile = File(...)):
 
     async def handle_row(idx, data, err):
         if err:
-            # data has original row including 'city'
             return {'row': idx, 'city': data.get('city'), 'error': err}
         try:
-            # extract city and raw for processing
             city = data.pop('city')
             processor = RiskProcessor(weights=weights, noise_level=noise_level)
             out = processor.process(data)
