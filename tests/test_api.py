@@ -47,6 +47,5 @@ def test_process_csv_endpoint_partial_invalid():
     response = client.post("/process-csv", files=files)
     assert response.status_code == 200
     text = response.text
-    print(f"aaaaaaaaaaa: {text}")
     assert "Chicago" in text
     assert "error" in text

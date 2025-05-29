@@ -28,8 +28,8 @@ class RiskProcessor:
         comps['socioeconomic_level'] = self._normalize(raw['socioeconomic_level'], 1, 10) * self.weights[
             'socioeconomic_level']
 
-        raw_weather = raw['weather_condition']
-        comps['weather_condition'] = self._normalize(self.weights['weather_condition'][raw_weather], 0, 10)
+        raw_weather = self.weights['weather_condition'][raw['weather_condition']]
+        comps['weather_condition'] = self._normalize(raw_weather, 0, 10)
 
         self._apply_conditional_logic(comps)
         self._apply_cross_feature(comps)

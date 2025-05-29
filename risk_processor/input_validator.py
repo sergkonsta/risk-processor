@@ -23,7 +23,6 @@ class InputValidator:
         for idx, row in enumerate(reader):
             try:
                 validated = InputValidator.validate_json(row)
-                data = validated.dict(exclude={'city'})
-                yield idx, data, None
+                yield idx, validated.dict(), None
             except ValueError as err:
-                yield idx, None, str(err)
+                yield idx, row, str(err)

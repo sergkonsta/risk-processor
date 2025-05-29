@@ -43,22 +43,29 @@ async def process_csv(file: UploadFile = File(...)):
 
     async def handle_row(idx, data, err):
         if err:
-            return {'row': idx, 'error': err}
+            # data has original row including 'city'
+            return {'row': idx, 'city': data.get('city'), 'error': err}
         try:
-            processor = RiskProcessor(weights=weights or {}, noise_level=noise_level)
+            # extract city and raw for processing
+            city = data.pop('city')
+            processor = RiskProcessor(weights=weights, noise_level=noise_level)
             out = processor.process(data)
             out['row'] = idx
+            out['city'] = city
             return out
         except Exception as e:
             logger.warning(f"Row {idx} processing error: {e}")
-            return {'row': idx, 'error': str(e)}
+            return {'row': idx, 'city': city, 'error': str(e)}
 
     tasks = [handle_row(i, data, err) for i, data, err in rows]
     results = await asyncio.gather(*tasks)
 
     df = pd.DataFrame(results)
-    buf = StringIO()
-    df.to_csv(buf, index=False)
+    buf = StringIO();
+    df.to_csv(buf, index=False);
     buf.seek(0)
-    return StreamingResponse(buf, media_type='text/csv',
-                             headers={'Content-Disposition': 'attachment; filename=results.csv'})
+    return StreamingResponse(
+        buf,
+        media_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename=results.csv'}
+    )

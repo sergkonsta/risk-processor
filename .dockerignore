@@ -1,4 +1,7 @@
 **
-
+!/requirements.txt
 !/main.py
 !/risk_processor
+!/config
+!/tests
+!/config_loader.py
